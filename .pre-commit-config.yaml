@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: pixi\.lock
+
+  - repo: local
+    hooks:
+      - id: no-hardcoded-tokens
+        name: No hardcoded API tokens
+        language: pygrep
+        entry: >-
+          (?x)
+          hf_[A-Za-z0-9]{20,}
+          |AIzaSy[A-Za-z0-9_-]{33}
+          |sk-[A-Za-z0-9]{32,}
+          |AKIA[0-9A-Z]{16}
+        types: [text]
+        exclude: >-
+          (?x)^(
+            \.secrets\.baseline|
+            pixi\.lock
+          )$
