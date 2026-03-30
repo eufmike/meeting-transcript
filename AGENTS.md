@@ -114,15 +114,22 @@ tests/
 
 config.yaml                 # API keys and model settings (gitignored)
 
+references/
+├── plans/                      # technical specs and planning docs
+└── templates/
+    └── meeting-notes.md        # mustache-style template for /meeting-notes skill
+
 .github/
 ├── agents/                     # agent persona definitions
 │   └── transcript-agent.md
 ├── commands/                   # slash commands / prompts (source of truth)
 │   ├── test.md
-│   └── add-speaker.md
-├── skills/                     # reusable task recipes
-│   ├── quality-check/SKILL.md  # dir name must match `name` frontmatter
-│   └── new-command/SKILL.md
+│   ├── add-speaker.md
+│   └── meeting-notes.md -> ../skills/meeting-notes/SKILL.md  # symlink
+├── skills/                     # reusable task recipes (Copilot: dir name = `name`)
+│   ├── quality-check/SKILL.md
+│   ├── new-command/SKILL.md
+│   └── meeting-notes/SKILL.md  # generate markdown meeting notes from CSV + JSON
 ├── workflows/                  # CI pipelines
 ├── copilot-instructions.md
 ├── PULL_REQUEST_TEMPLATE.md
