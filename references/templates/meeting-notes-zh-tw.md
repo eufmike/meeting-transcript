@@ -1,12 +1,12 @@
 # {{title}}
 
-**Date:** {{date}}
-**Attendees:** {{attendees}}
-**Duration:** {{duration}}
+**日期：** {{date}}
+**出席者：** {{attendees}}
+**時長：** {{duration}}
 
 ---
 
-## Summary
+## 摘要
 
 {{#each summary}}
 - {{this}}
@@ -14,7 +14,7 @@
 
 ---
 
-## Discussion Topics
+## 討論議題
 
 {{#each topics}}
 ### {{topic}}
@@ -25,9 +25,9 @@
 
 ---
 
-## Action Items
+## 行動事項
 
-| # | Task | Owner | Priority | Deadline |
+| # | 任務 | 負責人 | 優先級 | 截止日期 |
 | --- | --- | --- | --- | --- |
 {{#each action_items}}
 | {{index}} | {{task}} | {{assignee}} | {{priority}} | {{deadline}} |
@@ -35,7 +35,7 @@
 
 ---
 
-## Unresolved
+## 待解決事項
 
 {{#each unresolved}}
 - {{this}}

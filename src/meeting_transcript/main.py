@@ -244,6 +244,10 @@ def notes(
         [], "--speaker", "-s",
         help="Speaker mapping as LABEL=Name (repeatable), e.g. -s SPEAKER_00=媽媽",
     ),
+    lang: str = typer.Option(
+        "auto", "--lang", "-l",
+        help="Output language: auto | zh-TW | en. 'auto' detects from transcript content.",
+    ),
     config: Path = typer.Option(Path("config.yaml"), "--config", "-c", help="Config file"),
     model: str = typer.Option("gemini-2.5-flash", "--model", "-m", help="Gemini model name"),
 ) -> None:
@@ -267,7 +271,7 @@ def notes(
     if output is None:
         output = transcript_csv.parent / "meeting-notes.md"
 
-    console.print(f"Generating notes via Gemini ([bold]{model}[/])...")
+    console.print(f"Generating notes via Gemini ([bold]{model}[/], lang=[bold]{lang}[/])...")
     generate_notes(
         transcript_csv=transcript_csv,
         analysis_json=analysis_json,
@@ -275,6 +279,7 @@ def notes(
         speaker_map=speaker_map,
         api_key=api_key,
         model=model,
+        lang=lang,
     )
     console.print(f"[bold green]Saved:[/] {output}")
 
