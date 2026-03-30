@@ -235,5 +235,49 @@ def export(
     console.print(f"Exported {len(transcript.utterances)} rows → [bold]{output}[/]")
 
 
+@app.command()
+def notes(
+    transcript_csv: Annotated[Path, typer.Argument(help="Transcript CSV (start,end,speaker,text)")],
+    analysis_json: Annotated[Path, typer.Argument(help="MeetingAnalysis JSON")],
+    output: Path = typer.Option(None, "--output", "-o", help="Output markdown path"),
+    speaker: list[str] = typer.Option(
+        [], "--speaker", "-s",
+        help="Speaker mapping as LABEL=Name (repeatable), e.g. -s SPEAKER_00=媽媽",
+    ),
+    config: Path = typer.Option(Path("config.yaml"), "--config", "-c", help="Config file"),
+    model: str = typer.Option("gemini-2.5-flash", "--model", "-m", help="Gemini model name"),
+) -> None:
+    """Generate a markdown meeting notes file from transcript CSV + analysis JSON via Gemini."""
+    import os
+    import yaml
+
+    from .analysis.notes_generator import generate_notes
+
+    cfg = yaml.safe_load(config.read_text()) if config.exists() else {}
+    api_key: str = cfg.get("gemini", {}).get("api_key", "") or os.environ.get("GEMINI_API_KEY", "")
+
+    speaker_map: dict[str, str] = {}
+    for mapping in speaker:
+        if "=" not in mapping:
+            typer.echo(f"Invalid speaker mapping (expected LABEL=Name): {mapping}", err=True)
+            raise typer.Exit(code=1)
+        label, name = mapping.split("=", 1)
+        speaker_map[label.strip()] = name.strip()
+
+    if output is None:
+        output = transcript_csv.parent / "meeting-notes.md"
+
+    console.print(f"Generating notes via Gemini ([bold]{model}[/])...")
+    generate_notes(
+        transcript_csv=transcript_csv,
+        analysis_json=analysis_json,
+        output_path=output,
+        speaker_map=speaker_map,
+        api_key=api_key,
+        model=model,
+    )
+    console.print(f"[bold green]Saved:[/] {output}")
+
+
 if __name__ == "__main__":
     app()
